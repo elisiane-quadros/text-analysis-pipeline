@@ -1,4 +1,5 @@
 from transformers import pipeline
+from src.config.settings import SUMMARIZATION_CONFIG
 
 
 class TextSummarizer:
@@ -15,11 +16,26 @@ class TextSummarizer:
         """
         Recebe um texto e retorna um resumo curto.
         """
+        text_length = len(text.split())
+
+        if text_length < 30:
+            return text
+
+        max_length = min(
+            SUMMARIZATION_CONFIG["max_length"],
+            max(10, text_length)
+        )
+
+        min_length = min(
+            SUMMARIZATION_CONFIG["min_length"],
+            max(text_length // 2)
+        )
+
         result = self.summarizer(
             text,
-            max_length=60,
-            min_length=20,
-            do_sample=False
+            max_length=max_length,
+            min_length=min_length,
+            do_sample=SUMMARIZATION_CONFIG["do_sample"]
         )
 
         return result[0]["summary_text"]

@@ -17,3 +17,4 @@ class TextClassifier:
 
         result = self.classifier(text, self.labels)
         return result["labels"][0]
+
